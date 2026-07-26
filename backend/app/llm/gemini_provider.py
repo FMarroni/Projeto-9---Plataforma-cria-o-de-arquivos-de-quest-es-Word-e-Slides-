@@ -8,7 +8,7 @@ from app.llm.retry import com_retry_predicado
 from app.prompts import EXTRACTION_SYSTEM_PROMPT, build_extraction_user_message
 from app.schemas import ExtractionResult
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "gemini-3.6-flash"
 
 
 def _e_rate_limit(e: Exception) -> bool:
