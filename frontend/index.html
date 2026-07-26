@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estratégia Concursos</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-roxo.svg" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="card">
+    <div class="cabecalho">
+      <img src="assets/logo-roxo.svg" alt="Estratégia Concursos" class="logo logo-clara" />
+      <img src="assets/logo-branca.webp" alt="Estratégia Concursos" class="logo logo-escura" />
+    </div>
+    <p class="subtitulo">
+      Envie o PDF de questões exportado do TEC Concursos e gere automaticamente
+      a lista de questões, as questões comentadas, a análise de incidência e os slides —
+      com suporte a imagens/gráficos (Vision) e retomada de sessão.
+    </p>
+
+    <div class="abas">
+      <button type="button" class="aba ativa" data-aba="nova">Nova análise</button>
+      <button type="button" class="aba" data-aba="retomar">Retomar sessão</button>
+      <button type="button" class="aba" data-aba="biblioteca">Biblioteca</button>
+      <button type="button" class="aba" data-aba="prompt">Prompt de Comentários</button>
+    </div>
+
+    <form id="form-gerar" class="painel-aba" data-painel="nova">
+      <div class="toggle-ia-linha">
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-ia" checked />
+          <span class="toggle-trilho"><span class="toggle-bolinha"></span></span>
+        </label>
+        <div class="toggle-texto">
+          <strong id="toggle-ia-titulo">Comentários com IA</strong>
+          <span class="meta" id="toggle-ia-descricao"></span>
+        </div>
+      </div>
+
+      <div id="secao-ia">
+        <label>
+          Provedor de IA
+          <select id="provider" name="provider">
+            <option value="openai">OpenAI (ChatGPT)</option>
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="gemini">Google (Gemini)</option>
+            <option value="fake">Fake (teste local, sem IA real)</option>
+          </select>
+        </label>
+
+        <label>
+          Chave de API
+          <input type="password" id="api_key" name="api_key" placeholder="sk-..." autocomplete="off" />
+        </label>
+
+        <label>
+          Modelo (opcional)
+          <input type="text" id="model" name="model" placeholder="padrão do provedor" autocomplete="off" />
+        </label>
+      </div>
+
+      <label>
+        PDF do TEC Concursos
+        <input type="file" id="pdf" name="pdf" accept="application/pdf" required />
+      </label>
+
+      <div class="secao-biblioteca-selecao" id="secao-biblioteca-selecao">
+        <p class="rotulo-secao">
+          Material de apoio (opcional) — selecione para ativar o Modo Restrito (RAG): a IA passa a
+          comentar cada questão baseada exclusivamente nesses PDFs, em vez do conhecimento geral dela.
+          Sem seleção, a análise funciona exatamente como antes.
+        </p>
+        <div id="lista-biblioteca-selecao" class="lista-biblioteca">
+          <p class="meta">Carregando biblioteca...</p>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-enviar">Gerar análise</button>
+    </form>
+
+    <form id="form-retomar" class="painel-aba oculto" data-painel="retomar">
+      <label>
+        ID da sessão
+        <input type="text" id="session_id" name="session_id" placeholder="ex.: 597209453fd8" required />
+      </label>
+
+      <label>
+        Chave de API (necessária de novo — nunca é salva em disco)
+        <input type="password" id="api_key_retomar" name="api_key" placeholder="sk-..." autocomplete="off" />
+      </label>
+
+      <button type="submit" id="btn-retomar">Retomar sessão</button>
+    </form>
+
+    <div id="painel-biblioteca" class="painel-aba oculto" data-painel="biblioteca">
+      <p class="subtitulo">
+        Envie PDFs de aulas/apostilas para formar uma base de conhecimento local. Esses documentos
+        ficam disponíveis para seleção opcional na aba "Nova análise" (Modo Restrito/RAG).
+      </p>
+
+      <form id="form-upload-biblioteca">
+        <label>
+          PDF da aula
+          <input type="file" id="pdf-biblioteca" name="pdf" accept="application/pdf" required />
+        </label>
+        <button type="submit" id="btn-upload-biblioteca">Enviar para a biblioteca</button>
+      </form>
+
+      <p class="meta" id="biblioteca-status"></p>
+
+      <div id="lista-biblioteca-gerenciar" class="lista-biblioteca">
+        <p class="meta">Carregando biblioteca...</p>
+      </div>
+    </div>
+
+    <div id="painel-prompt" class="painel-aba oculto" data-painel="prompt">
+      <p class="subtitulo">
+        Este é o prompt de sistema usado para gerar o comentário de cada
+        questão. Você pode consultá-lo e editá-lo à vontade — as alterações são salvas
+        localmente e passam a valer nas próximas análises.
+      </p>
+
+      <label>
+        Prompt de comentário
+        <textarea id="prompt-comentario" rows="20" spellcheck="false"></textarea>
+      </label>
+
+      <p class="meta" id="prompt-status"></p>
+
+      <div class="acoes-prompt">
+        <button type="button" id="btn-salvar-prompt">Salvar alterações</button>
+        <button type="button" id="btn-restaurar-prompt">Restaurar padrão</button>
+      </div>
+    </div>
+
+    <div id="terminal-container" class="terminal-container oculto">
+      <div class="terminal-header">Console</div>
+      <pre id="terminal" class="terminal"></pre>
+    </div>
+
+    <div id="resultado" class="resultado oculto">
+      <p><strong id="total-questoes"></strong></p>
+      <p class="meta">ID da sessão: <code id="session-id-exibido"></code> (guarde para retomar depois, se precisar)</p>
+      <a id="link-lista" class="botao-download" download>Lista de Questões (.docx)</a>
+      <a id="link-comentada" class="botao-download" download>Questões Comentadas (.docx)</a>
+      <a id="link-analise" class="botao-download" download>Análise de Incidência (.html)</a>
+      <a id="link-slides" class="botao-download" download>Slides (.pptx)</a>
+      <a id="link-rastreabilidade" class="botao-download oculto" download>Rastreabilidade (.docx)</a>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+Coruj.IA — Como usar
+====================
+
+COMO ABRIR
+----------
+Dê dois cliques no arquivo "Iniciar Coruj.IA.bat" (nesta mesma pasta).
+O navegador abre sozinho em http://127.0.0.1:8000 quando terminar de carregar.
+
+Na primeira vez que você abrir neste computador, o arquivo vai preparar o
+ambiente automaticamente (baixar as bibliotecas necessárias) — isso pode
+levar alguns minutos. Nas próximas vezes, abre quase na hora.
+
+Uma janela de terminal chamada "Coruj.IA - Servidor" vai ficar aberta
+enquanto você usa a plataforma — é normal, é o programa rodando. Para
+encerrar a Coruj.IA, basta fechar essa janela (ou fechar o computador).
+
+O QUE VOCÊ PRECISA TER INSTALADO
+---------------------------------
+- Python 3.10 ou mais recente. Baixe em https://www.python.org/downloads/
+  Durante a instalação, marque a opção "Add python.exe to PATH".
+- Conexão com a internet: necessária para preparar o ambiente na primeira
+  vez, para as chamadas de IA (OpenAI/Anthropic/Gemini) e para a primeira
+  vez que usar a aba "Biblioteca" (baixa um modelo pequeno de busca local).
+
+CHAVE DE API
+------------
+A Coruj.IA não vem com nenhuma chave de IA embutida — cada pessoa usa a
+própria chave (OpenAI, Anthropic ou Google Gemini), digitada direto na tela
+"Nova análise". A chave NUNCA é salva em disco pelo programa; se quiser,
+o navegador pode lembrar dela localmente (fica só no seu computador).
+
+PROBLEMAS COMUNS
+-----------------
+- "Python não foi encontrado": instale o Python (link acima) e rode de
+  novo o "Iniciar Coruj.IA.bat".
+- Nada abre no navegador: espere alguns segundos e acesse manualmente
+  http://127.0.0.1:8000
+- Quer usar em outro computador da rede: fale com quem configurou a
+  Coruj.IA — dá pra deixar acessível para outros PCs também.

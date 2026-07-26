@@ -1,0 +1,28 @@
+Montserrat (subconjunto estático) — usado por backend/app/pptx_layout.py
+==========================================================================
+
+Origem: Google Fonts, projeto "Montserrat" (Julieta Ulanovsky e colaboradores),
+https://github.com/google/fonts/tree/main/ofl/montserrat — licenciado sob a
+SIL Open Font License 1.1 (texto completo em OFL.txt, nesta mesma pasta), que
+permite uso, modificação e redistribuição, inclusive embutido em software.
+
+Os arquivos .ttf desta pasta NÃO são os arquivos originais do repositório —
+o Google Fonts distribui o Montserrat como fonte variável (um único arquivo
+por estilo, com o eixo de peso "wght" ajustável). Para medição tipográfica
+determinística (ver `_caminho_fonte` em pptx_layout.py), foram gerados 4
+INSTÂNCIAS ESTÁTICAS a partir das fontes variáveis originais, via:
+
+    python -m fontTools.varLib.instancer Montserrat[wght].ttf        wght=400 --update-name-table -o Montserrat-Regular.ttf
+    python -m fontTools.varLib.instancer Montserrat[wght].ttf        wght=700 --update-name-table -o Montserrat-Bold.ttf
+    python -m fontTools.varLib.instancer Montserrat-Italic[wght].ttf wght=400 --update-name-table -o Montserrat-Italic.ttf
+    python -m fontTools.varLib.instancer Montserrat-Italic[wght].ttf wght=700 --update-name-table -o Montserrat-BoldItalic.ttf
+
+Isso não altera o desenho das letras (é a mesma fonte, só "congelada" num
+peso específico) — apenas simplifica a seleção por família/peso/itálico via
+matplotlib.font_manager, que lida melhor com arquivos estáticos do que com
+eixos variáveis.
+
+Se o Montserrat original precisar ser atualizado no futuro, baixe os dois
+arquivos "Montserrat[wght].ttf" / "Montserrat-Italic[wght].ttf" em
+https://github.com/google/fonts/tree/main/ofl/montserrat e repita os 4
+comandos acima.

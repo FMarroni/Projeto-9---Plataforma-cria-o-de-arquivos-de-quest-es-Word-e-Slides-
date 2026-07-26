@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic>=2
+python-docx
+python-pptx
+pymupdf
+openai
+anthropic
+google-genai
+tenacity
+sse-starlette
+matplotlib
+chromadb
+pytest
+pytest-asyncio
